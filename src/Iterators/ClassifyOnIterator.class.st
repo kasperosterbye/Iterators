@@ -46,5 +46,7 @@ ClassifyOnIterator >> decorate: anIterator [
 		whileTrue: [ n := inIterator next.
 			self addToDict: dict object: n ].
 	keys := dict keys asOrderedCollection sort.
-	^(GeneratorWrapper generator: [ :gen | keys do: [ :key | gen yield: (key -> (dict at: key) iterator) ] ])
+	^ GeneratorWrapper
+		generator:
+			[ :gen | keys do: [ :key | gen yield: key -> (dict at: key) iterator ] ]
 ]
