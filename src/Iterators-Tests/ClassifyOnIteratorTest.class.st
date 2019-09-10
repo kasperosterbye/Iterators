@@ -3,9 +3,21 @@ A ClassifyOnIteratorTest is a test class for testing the behavior of ClassifyOnI
 "
 Class {
 	#name : #ClassifyOnIteratorTest,
-	#superclass : #TestCase,
+	#superclass : #IteratorDecoratorTest,
 	#category : #'Iterators-Tests-Decorators'
 }
+
+{ #category : #'iterator creation' }
+ClassifyOnIteratorTest >> createIteratorOn: anObject [
+	^ (ClassifyOnIterator classifier: [ :elem | elem ]) decorate: anObject
+]
+
+{ #category : #accessing }
+ClassifyOnIteratorTest >> iteratorWalk [
+	"Returns the walk that is expected to be done by the iterator under test."
+
+	^ (1 to: 10) collect: [ :elem | elem -> (Array with: elem) iterator ].
+]
 
 { #category : #tests }
 ClassifyOnIteratorTest >> testOddAndEven [

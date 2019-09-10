@@ -79,3 +79,8 @@ GeneratorWrapper >> pipe: aBlock [
 	pipeBlock := aBlock
 	
 ]
+
+{ #category : #'input-output' }
+GeneratorWrapper >> takeAsInput: anIterator [
+	^ self decorate: anIterator
+]
