@@ -11,42 +11,20 @@ Notice: In most other libraries this class would implement ""group by"" instead 
 Class {
 	#name : #ClassifyOnIterator,
 	#superclass : #IteratorDecorator,
-	#instVars : [
-		'inStream',
-		'tempDict',
-		'inIterator',
-		'classifierBlock'
-	],
 	#category : #'Iterators-Decorators'
 }
 
 { #category : #'instance creation' }
-ClassifyOnIterator class >> classifier: aBlockClosure [ 
-	^self new classifier: aBlockClosure 
-]
-
-{ #category : #private }
-ClassifyOnIterator >> addToDict: dict object: obj [ 
-	| key |
-	key := classifierBlock value: obj.
-	(dict includesKey: key) ifTrue: [ (dict at: key) add: obj ] ifFalse: [ dict at: key put: (OrderedCollection with: obj)]
-]
-
-{ #category : #'instance creation' }
-ClassifyOnIterator >> classifier: aBlockClosure [
-	classifierBlock := aBlockClosure 
-]
-
-{ #category : #accessing }
-ClassifyOnIterator >> decorate: anIterator [
-	| dict n keys |
-	inIterator := anIterator.
-	dict := Dictionary new.
-	[ inIterator hasNext ]
-		whileTrue: [ n := inIterator next.
-			self addToDict: dict object: n ].
-	keys := dict keys asOrderedCollection sort.
-	^ GeneratorWrapper
-		generator:
-			[ :gen | keys do: [ :key | gen yield: key -> (dict at: key) iterator ] ]
+ClassifyOnIterator class >> classifier: classifierBlock [
+	^ GeneratorDecorator
+		pipe: [ :inIterator :gen | 
+			| dict obj keys |
+			dict := Dictionary new.
+			[ inIterator hasNext ]
+				whileTrue: [ | key |
+					obj := inIterator next.
+					key := classifierBlock value: obj.
+					(dict at: key ifAbsentPut: [ OrderedCollection new ]) add: obj ].
+			keys := dict keys asOrderedCollection sort.
+			keys do: [ :each | gen yield: each -> (dict at: each) asArray ] ]
 ]

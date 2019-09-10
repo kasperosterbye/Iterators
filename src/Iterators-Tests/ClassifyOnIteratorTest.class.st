@@ -16,7 +16,7 @@ ClassifyOnIteratorTest >> createIteratorOn: anObject [
 ClassifyOnIteratorTest >> iteratorWalk [
 	"Returns the walk that is expected to be done by the iterator under test."
 
-	^ (1 to: 10) collect: [ :elem | elem -> (Array with: elem) iterator ].
+	^ (1 to: 10) collect: [ :elem | elem -> (Array with: elem) ]
 ]
 
 { #category : #tests }
@@ -28,10 +28,10 @@ ClassifyOnIteratorTest >> testOddAndEven [
 				ifTrue: [ #odd ]
 				ifFalse: [ #even ] ]) decorate: (1 to: 7) iterator.
 	res := classifier next.
-	self assert: res key equals: #even. "even sorted before odd"
-	self assert: (res value > Array) size equals: 3.	"2 4 6"
+	self assert: res key equals: #even.	"even sorted before odd"
+	self assert: res value size equals: 3.	"2 4 6"
 	res := classifier next.
 	self assert: res key equals: #odd.
-	self assert: res value > Array equals: #(1 3 5 7).
-	self assert: classifier hasNext not "no more please"
+	self assert: res value equals: #(1 3 5 7).
+	self assert: classifier hasNext not	"no more please"
 ]
